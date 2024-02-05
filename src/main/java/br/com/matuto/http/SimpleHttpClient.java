@@ -71,7 +71,7 @@ public class SimpleHttpClient implements HttpClient {
 
     public HttpResponse makeRequest(HttpRequest request) throws IOException, InterruptedException, HttpTimeoutException{
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(request.uri())
-                .timeout(Duration.ofMillis(3000)) // Configura o timeout aqui, se foi definido anteriormente.
+                .timeout(Duration.ofMillis(3000))
                 .method(request.method(), request.bodyPublisher().orElse(HttpRequest.BodyPublishers.noBody()));
         request.headers().map().forEach((k, v) -> v.forEach(value -> requestBuilder.header(k, value)));
 
@@ -90,7 +90,6 @@ public class SimpleHttpClient implements HttpClient {
                         throw new RuntimeException(ex);
                     }
                 } catch (Exception e) {
-                    // Para outras exceções, encapsula em RuntimeException
                     throw new RuntimeException("Erro ao executar request HTTP", e);
                 }
             }, requestWithTimeout);
@@ -98,7 +97,7 @@ public class SimpleHttpClient implements HttpClient {
             Throwable cause = e.getCause();
             if (cause instanceof IOException) throw (IOException) cause;
             if (cause instanceof InterruptedException) throw (InterruptedException) cause;
-            throw e; // Relança RuntimeException para outras exceções encapsuladas.
+            throw e;
         }
     }
 
